@@ -1,0 +1,14 @@
+{
+  "name": "project-web-dev",
+  "version": "1.0.0",
+  "description": "Final Project for Web Development Advanced Concepts 2025",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ostafie Cosmin Andrei & Alaa Alkhaled",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
