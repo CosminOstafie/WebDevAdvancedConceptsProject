@@ -9,6 +9,9 @@
   "author": "Ostafie Cosmin Andrei & Alaa Alkhaled",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "pg": "^8.13.3",
+    "postgres": "^3.4.5"
   }
 }
