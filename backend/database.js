@@ -27,23 +27,23 @@ function createTable(){
 
 createTable();
 
-// fs.readFile('./data/stores.json','utf8', async (err,data)=>{
-//     if(err){
-//         console.error("Error reading JSON file:",err.stack);
-//         process.exit(1);
-//     }
-//     try{
-//         const stores = JSON.parse(data);
+fs.readFile('./data/stores.json','utf8', async (err,data)=>{
+     if(err){
+         console.error("Error reading JSON file:",err.stack);
+         process.exit(1);
+     }
+     try{
+         const stores = JSON.parse(data);
         
-//         for(let store of stores){
-//             const insertTableQuery = 'INSERT INTO stores (name,url,district) VALUES ($1,$2,$3);';
-//             await client.query(insertTableQuery,[store.name,store.url,store.district]);
-//         }
-//         console.log("Data inserted into stores table successfully");
-//     }catch(error){
-//         console.error("error inserting data into stores table:",error)
-//     }
-// })
+         for(let store of stores){
+             const insertTableQuery = 'INSERT INTO stores (name,url,district) VALUES ($1,$2,$3);';
+             await client.query(insertTableQuery,[store.name,store.url,store.district]);
+         }
+         console.log("Data inserted into stores table successfully");
+     }catch(error){
+         console.error("error inserting data into stores table:",error)
+     }
+ })
 
 // function disconnectDB(){
 //     client.end()

@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="public.css">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="public.css">
+  <title>Store List</title>
 </head>
 <body>
-    <h1>Welcome to the Project!</h1>
-    <ul id="store-list"></ul>
+  <h1>Welcome to the Project!</h1>
+  
+  <!-- Sorting Controls -->
+  <div id="controls">
+    <label for="sort">Sort by:</label>
+    <select id="sort">
+      <option value="name">Name</option>
+      <option value="district">District</option>
+    </select>
+    <button id="sortBtn">Sort</button>
+  </div>
+  
+  <!-- Store List -->
+  <ul id="store-list"></ul>
+  
+  <!-- Form to Add a New Store -->
+  <section id="addStore">
+    <h2>Add a New Store</h2>
+    <form id="addStoreForm">
+      <input type="text" id="storeName" placeholder="Store Name" required>
+      <input type="url" id="storeUrl" placeholder="Store URL" required>
+      <input type="text" id="storeDistrict" placeholder="District">
+      <button type="submit">Add Store</button>
+    </form>
+  </section>
+  
+  <script src="start.js"></script>
 </body>
-<script src="start.js"></script>
 </html>
