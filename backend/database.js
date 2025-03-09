@@ -45,10 +45,10 @@ fs.readFile('./data/stores.json','utf8', async (err,data)=>{
     }
 })
 
-// function disconnectDB(){
-//     client.end()
-//     .then(()=>console.log("Database connection closed."))
-//     .catch(err=>console.error("Error disconnecting from the database:",err.stack))
-// }
+function disconnectDB(){
+    client.end()
+    .then(()=>console.log("Database connection closed."))
+    .catch(err=>console.error("Error disconnecting from the database:",err.stack))
+}
 
 // disconnectDB();

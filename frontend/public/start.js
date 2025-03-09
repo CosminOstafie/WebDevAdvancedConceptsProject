@@ -30,20 +30,22 @@ function fetchStores() {
 // Remove a store using its id (requires backend DELETE support)
 function removeStore(id) {
   fetch(`http://localhost:3000/api/stores/${id}`, {
-    method: 'DELETE'
+    method: 'DELETE',
+    credentials:'include'
   })
   .then(res => res.json())
   .then(() => {
     // Refresh the store list after deletion
     fetchStores();
   })
-  .catch(err => console.error("Error removing store", err));
+  .catch(err => console.error("Error removing store", err.stack));
 }
 
 // Use event delegation for remove button clicks
 document.getElementById('store-list').addEventListener('click', function(e) {
   if (e.target && e.target.classList.contains('remove-btn')) {
     const id = e.target.getAttribute('data-id');
+    console.log("Wanted id:",id)
     removeStore(id);
   }
 });
@@ -65,23 +67,37 @@ document.getElementById('addStoreForm').addEventListener('submit', function(e) {
   
   const newStore = {
     name: document.getElementById('storeName').value,
-    url: document.getElementById('storeUrl').value,
+    url: document.getElementById('storeUrl').value || null,
     district: document.getElementById('storeDistrict').value || null
   };
   
   // POST the new store to the backend API
   fetch('http://localhost:3000/api/stores', {
     method: 'POST',
+    credentials: "include",
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newStore)
   })
   .then(res => res.json())
   .then(() => {
+    console.log("New Store: ",newStore)
     fetchStores();
     e.target.reset(); // Clear form fields
   })
-  .catch(err => console.error("Error adding store", err));
+  .catch(err => console.error("Error adding store: ", err.stack));
 });
 
 // Initial fetch of the store list when the page loads
 fetchStores();
+
+document.getElementById("logoutLink").addEventListener('click', async ()=>{
+try{
+    const res = await fetch('http://localhost:3000/logout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'}
+    })
+}catch(err){
+  console.error("error: ",err.stack);
+}
+})

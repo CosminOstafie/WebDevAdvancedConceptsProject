@@ -9,6 +9,7 @@
   "author": "Ostafie Cosmin Andrei & Alaa Alkhaled",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "pg": "^8.13.3",

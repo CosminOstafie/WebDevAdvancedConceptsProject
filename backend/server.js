@@ -2,11 +2,23 @@ const express = require("express");
 const { Client } = require("pg");
 const cors = require("cors");
 const app = express();
+const cookieParser = require('cookie-parser');
+const crypto = require('crypto');
+
 const PORT = 3000;
 
+const SECRET = "secretCookieToken";
+const sessions = {};
+
 // Enable CORS and JSON body parsing
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials:true
+}));
 app.use(express.json());
+app.use(cookieParser(SECRET));
+app.use(express.urlencoded({extended:true}));
+
 
 const client = new Client({
     connectionString: process.env.DATABASE_URL || 'postgres://webdev:12345@localhost:5432/mydatabase'
@@ -30,7 +42,6 @@ app.get("/api/stores", async (req, res) => {
         const selectTableQuery = "SELECT * FROM stores ORDER BY id ASC;";
         const resDB = await client.query(selectTableQuery);
         res.json(resDB.rows);
-        console.log("Response from database: ", resDB.rows);
     } catch (err) {
         console.error("Error querying the database:", err.stack);
         res.status(500).json({ error: "Database query failed" });
@@ -38,7 +49,7 @@ app.get("/api/stores", async (req, res) => {
 });
 
 // POST endpoint: Add a new store
-app.post("/api/stores", async (req, res) => {
+app.post("/api/stores", requireLogin,  async (req, res) => {
     const { name, url, district } = req.body;
     try {
         const insertQuery =
@@ -52,7 +63,8 @@ app.post("/api/stores", async (req, res) => {
 });
 
 // DELETE endpoint: Remove a store by id
-app.delete("/api/stores/:id", async (req, res) => {
+app.delete("/api/stores/:id",requireLogin, async (req, res) => {
+    
     const { id } = req.params;
     try {
         const deleteQuery = "DELETE FROM stores WHERE id = $1;";
@@ -63,6 +75,53 @@ app.delete("/api/stores/:id", async (req, res) => {
         res.status(500).json({ error: "Database deletion failed" });
     }
 });
+
+
+//Login
+
+// app.get('/login', (req,res)=>{
+//     res.sendFile(path.join(__dirname, 'public' , 'login.html'))
+// })
+
+function requireLogin(req,res,next){
+    const authCookie = req.signedCookies.authToken;
+    if(authCookie){
+        next();
+    } else{
+        res.status(401).json("Unauthorized: You must be logged in to perform this action.")
+    }
+}
+
+
+app.post('/login', (req,res)=>{
+    const {username,password} = req.body;
+    console.log("login attempt: ",username, password)
+    if(username === 'admin' && password ==="password"){
+        const token = crypto.randomBytes(64).toString('hex');
+        sessions[token] = {username};
+        res.cookie('authToken', token, {signed:true, httpOnly:true});
+        res.cookie('auth', 'true', {signed:true,httpOnly:true,secure:false} )
+        res.redirect('http://localhost:8080/')
+    }else{
+        res.status(401).send("invalid credentials");
+    }
+})
+
+app.post('/logout', (req,res)=>{
+    const token = req.signedCookies.authToken;
+
+    if(token){
+        delete sessions[token];
+    }
+    res.clearCookie('authToken');
+    res.clearCookie('auth');
+    res.redirect('http://localhost:8080/');
+})
+
+// app.post('/login', (req,res)=>{
+//     const {username,password} = req.body;
+//     console.log("Login attempt:",username,password);
+// })
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
